@@ -393,16 +393,32 @@ uint8_t u8x8_byte_ks0108(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *arg_p
 
 void u8x8_byte_set_nt4108_cs(u8x8_t *u8x8, uint8_t arg)
 {
-    u8x8_gpio_call(u8x8, U8X8_MSG_GPIO_CS1, arg&1);
-    arg = arg >> 1;
-    u8x8_gpio_call(u8x8, U8X8_MSG_GPIO_CS2, arg&1);
-    u8x8_gpio_SetCS(u8x8, arg&1);
-    
-//    u8x8_gpio_SetCS(u8x8, arg&1);
-//    arg = arg >> 1;
-//    u8x8_gpio_call(u8x8, U8X8_MSG_GPIO_CS1, arg&1);
-//    arg = arg >> 1;
-//    u8x8_gpio_call(u8x8, U8X8_MSG_GPIO_CS2, arg&1);
+    case 0:                                                 // CSA = 1, CSB = 1, CSC = 1;
+        u8x8_gpio_SetCS(u8x8, 1);
+        u8x8_gpio_call(u8x8, U8X8_MSG_GPIO_CS1, 1);
+        u8x8_gpio_call(u8x8, U8X8_MSG_GPIO_CS2, 1);
+        break;
+    case 1:
+        u8x8_gpio_SetCS(u8x8, 0);
+        u8x8_gpio_call(u8x8, U8X8_MSG_GPIO_CS1, 0);
+        u8x8_gpio_call(u8x8, U8X8_MSG_GPIO_CS2, 0);
+        break;
+    case 2:
+        u8x8_gpio_SetCS(u8x8, 0);
+        u8x8_gpio_call(u8x8, U8X8_MSG_GPIO_CS1, 1);
+        u8x8_gpio_call(u8x8, U8X8_MSG_GPIO_CS2, 0);
+        break;
+    case 3:
+        u8x8_gpio_SetCS(u8x8, 1);
+        u8x8_gpio_call(u8x8, U8X8_MSG_GPIO_CS1, 0);
+        u8x8_gpio_call(u8x8, U8X8_MSG_GPIO_CS2, 0);
+        break;
+    case 4:
+        u8x8_gpio_SetCS(u8x8, 1);
+        u8x8_gpio_call(u8x8, U8X8_MSG_GPIO_CS1, 1);
+        u8x8_gpio_call(u8x8, U8X8_MSG_GPIO_CS2, 0);
+        break;
+    }
 }
 
 /* 6800 mode */
