@@ -37,9 +37,6 @@
 */
 #include "u8x8.h"
 
-
-
-
 static const uint8_t u8x8_d_ks0108_init_seq[] = {
   U8X8_C(0x0c0),		                /* start at the top  */  
   U8X8_END()             			/* end of sequence */
@@ -342,3 +339,134 @@ uint8_t u8x8_d_ks0108_erm19264(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void 
   return 1;
 }
 
+static const u8x8_display_info_t u8x8_nt4108_256x64_display_info =
+{
+   /* chip_enable_level = */ 0,		/* KS0108: Not used */
+  /* chip_disable_level = */ 1,		/* KS0108: Not used */
+  
+  /* post_chip_enable_wait_ns = */ 100,
+  /* pre_chip_disable_wait_ns = */ 20,
+  /* reset_pulse_width_ms = */ 1, 
+  /* post_reset_wait_ms = */ 6, 		/* could be faster for the KS0108 */
+  /* sda_setup_time_ns = */ 12,		
+  /* sck_pulse_width_ns = */ 75,	/* KS0108: Not used */
+  /* sck_clock_hz = */ 4000000UL,	/* KS0108: Not used */
+  /* spi_mode = */ 0,				/* active high, rising edge */
+  /* i2c_bus_clock_100kHz = */ 4,	/* KS0108: Not used */
+  /* data_setup_time_ns = */ 200,
+  /* write_pulse_width_ns = */ 250,	/* KS0108: actially 450 ns, but additional 200 ns are added by the byte transfer function */
+  /* tile_width = */ 16,		    /* width of 16*8=128 pixel */
+  /* tile_hight = */ 8,
+  /* default_x_offset = */ 0,
+  /* flipmode_x_offset = */ 0,
+  /* pixel_width = */ 128,
+  /* pixel_height = */ 64
+};
+
+uint8_t u8x8_d_nt4108_256x64(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *arg_ptr)
+{
+    struct u8x8_ks0108_vars v;
+    switch(msg)
+    {
+        case U8X8_MSG_DISPLAY_SETUP_MEMORY:
+            u8x8_d_helper_display_setup_memory(u8x8, &u8x8_nt4108_256x64_display_info);
+            break;
+        case U8X8_MSG_DISPLAY_INIT:
+            u8x8_d_helper_display_init(u8x8);
+    
+            u8x8->cad_cb(u8x8, U8X8_MSG_CAD_START_TRANSFER, 1, NULL);
+            u8x8_cad_SendSequence(u8x8, u8x8_d_ks0108_init_seq);
+            u8x8->cad_cb(u8x8, U8X8_MSG_CAD_END_TRANSFER, 0, NULL);
+    
+            u8x8->cad_cb(u8x8, U8X8_MSG_CAD_START_TRANSFER, 2, NULL);
+            u8x8_cad_SendSequence(u8x8, u8x8_d_ks0108_init_seq);
+            u8x8->cad_cb(u8x8, U8X8_MSG_CAD_END_TRANSFER, 0, NULL);
+      
+            u8x8->cad_cb(u8x8, U8X8_MSG_CAD_START_TRANSFER, 3, NULL);
+            u8x8_cad_SendSequence(u8x8, u8x8_d_ks0108_init_seq);
+            u8x8->cad_cb(u8x8, U8X8_MSG_CAD_END_TRANSFER, 0, NULL);
+      
+            u8x8->cad_cb(u8x8, U8X8_MSG_CAD_START_TRANSFER, 4, NULL);
+            u8x8_cad_SendSequence(u8x8, u8x8_d_ks0108_init_seq);
+            u8x8->cad_cb(u8x8, U8X8_MSG_CAD_END_TRANSFER, 0, NULL);
+            break;
+        case U8X8_MSG_DISPLAY_SET_POWER_SAVE:
+            if ( arg_int == 0 )
+            {
+                u8x8->cad_cb(u8x8, U8X8_MSG_CAD_START_TRANSFER, 1, NULL);
+                u8x8_cad_SendSequence(u8x8, u8x8_d_ks0108_powersave0_seq);
+                u8x8->cad_cb(u8x8, U8X8_MSG_CAD_END_TRANSFER, 0, NULL);
+
+                u8x8->cad_cb(u8x8, U8X8_MSG_CAD_START_TRANSFER, 2, NULL);
+                u8x8_cad_SendSequence(u8x8, u8x8_d_ks0108_powersave0_seq);
+                u8x8->cad_cb(u8x8, U8X8_MSG_CAD_END_TRANSFER, 0, NULL);
+   
+                u8x8->cad_cb(u8x8, U8X8_MSG_CAD_START_TRANSFER, 3, NULL);
+                u8x8_cad_SendSequence(u8x8, u8x8_d_ks0108_powersave0_seq);
+                u8x8->cad_cb(u8x8, U8X8_MSG_CAD_END_TRANSFER, 0, NULL);
+	
+                u8x8->cad_cb(u8x8, U8X8_MSG_CAD_START_TRANSFER, 4, NULL);
+                u8x8_cad_SendSequence(u8x8, u8x8_d_ks0108_powersave0_seq);
+                u8x8->cad_cb(u8x8, U8X8_MSG_CAD_END_TRANSFER, 0, NULL);  
+            }
+            else
+            {
+                u8x8->cad_cb(u8x8, U8X8_MSG_CAD_START_TRANSFER, 1, NULL);
+                u8x8_cad_SendSequence(u8x8, u8x8_d_ks0108_powersave1_seq);
+                u8x8->cad_cb(u8x8, U8X8_MSG_CAD_END_TRANSFER, 0, NULL);
+	
+                u8x8->cad_cb(u8x8, U8X8_MSG_CAD_START_TRANSFER, 2, NULL);
+                u8x8_cad_SendSequence(u8x8, u8x8_d_ks0108_powersave1_seq);
+                u8x8->cad_cb(u8x8, U8X8_MSG_CAD_END_TRANSFER, 0, NULL);
+   
+                u8x8->cad_cb(u8x8, U8X8_MSG_CAD_START_TRANSFER, 3, NULL);
+                u8x8_cad_SendSequence(u8x8, u8x8_d_ks0108_powersave1_seq);
+                u8x8->cad_cb(u8x8, U8X8_MSG_CAD_END_TRANSFER, 0, NULL);
+    
+                u8x8->cad_cb(u8x8, U8X8_MSG_CAD_START_TRANSFER, 4, NULL);
+                u8x8_cad_SendSequence(u8x8, u8x8_d_ks0108_powersave1_seq);
+                u8x8->cad_cb(u8x8, U8X8_MSG_CAD_END_TRANSFER, 0, NULL);	
+            }
+            break;
+            // The KS0108 can not mirror the cols and rows, use U8g2 for rotation
+//      case U8X8_MSG_DISPLAY_SET_FLIP_MODE:
+//          break;
+            // The KS0108 has no internal contrast command
+//      case U8X8_MSG_DISPLAY_SET_CONTRAST:
+//          break;
+        case U8X8_MSG_DISPLAY_DRAW_TILE:
+            v.ptr = ((u8x8_tile_t *)arg_ptr)->tile_ptr;
+            v.x = ((u8x8_tile_t *)arg_ptr)->x_pos;
+            v.c = ((u8x8_tile_t *)arg_ptr)->cnt;
+            v.arg_int = arg_int;    
+      
+            if ( v.x < 8 )
+            {
+                u8x8->cad_cb(u8x8, U8X8_MSG_CAD_START_TRANSFER, 1, NULL);
+                u8x8_ks0108_out(u8x8, &v, arg_ptr);
+                u8x8->cad_cb(u8x8, U8X8_MSG_CAD_END_TRANSFER, 0, NULL);
+            }
+            if ( v.x < 16 )
+            {
+                u8x8->cad_cb(u8x8, U8X8_MSG_CAD_START_TRANSFER, 2, NULL);
+                u8x8_ks0108_out(u8x8, &v, arg_ptr);
+                u8x8->cad_cb(u8x8, U8X8_MSG_CAD_END_TRANSFER, 0, NULL);
+            }
+            if ( v.x < 24 )
+            {
+                u8x8->cad_cb(u8x8, U8X8_MSG_CAD_START_TRANSFER, 3, NULL);
+                u8x8_ks0108_out(u8x8, &v, arg_ptr);
+                u8x8->cad_cb(u8x8, U8X8_MSG_CAD_END_TRANSFER, 0, NULL);
+            }
+            if ( v.x < 32 )
+            {
+                u8x8->cad_cb(u8x8, U8X8_MSG_CAD_START_TRANSFER, 4, NULL);
+                u8x8_ks0108_out(u8x8, &v, arg_ptr);
+                u8x8->cad_cb(u8x8, U8X8_MSG_CAD_END_TRANSFER, 0, NULL);
+            }
+            break;
+        default:
+            return 0;
+    }
+    return 1;
+}
